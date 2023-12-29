@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}  REGISTER {% endblock %}
+
+{% block content %}
+
+
+<div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+    <p class="text-center fw-bold mx-3 mb-0 p-5">{% block form_title %}REGISTRATE {% endblock %}</p>
+</div>
+<form method="post" class="your-form-class">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary btn-lg mt-5 mb-5">Crear Cuenta</button>
+</form>
+{% if messages %} 
+{% for m in messages %}
+<script>
+  Swal.fire({
+  icon: 'info',
+    title: '{{m}}',
+   });
+</script>
+{% endfor %} 
+{% endif %} 
+
+{% endblock %}
