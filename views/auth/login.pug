@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Login Form
+   
+
+  body
+    .container
+      h2 Iniciar Sesión
+      form(action="/login", method="post")
+        label(for="username") Usuario:
+        input(type="text", id="username", name="username", required)
+
+        label(for="password") Contraseña:
+        input(type="password", id="password", name="password", required)
+
+        input(type="submit", value="Iniciar Sesión")
