@@ -1,0 +1,39 @@
+extends ../layout/index 
+      
+block content
+
+      h1.text-center.text-4xl.font-extrabold.my-10 MY 
+           span.font-normal Reports
+      h2.text-center.text-2xl.font-extrabold=titulo
+
+      .mt-8.mx-auto.max-w-md
+        .bg-white.py-8.px-4.shadow
+
+            form.space-y-5(action="/login", method="post")
+
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="cc") CC:
+                    input(type="number", id="cc", name="cc",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="CC" required)
+
+                 
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="username")  Usuario:
+                    input(type="text", id="username", name="username",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu nombre" required)
+
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="correo")  Correo:
+                    input(type="email", id="correo", name="correo", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu Email" required)
+
+                div
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") Contraseña:
+                    input(type="password", id="password", name="password", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu password" required)
+
+                div
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="repetir_password") Repite Contraseña:
+                    input(type="password", id="password", name="repetir_password", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Repite tu password" required)
+
+                .flex.items-center
+                    a(href="/login", class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800") ¿Ya tienes cuenta? Inicia Sesion
+                   
+                div
+                    input(type="submit", value="Crear Cuenta", class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 cursor-pointer rounded")
