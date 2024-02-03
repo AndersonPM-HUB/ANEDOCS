@@ -1,0 +1,16 @@
+extends ../layout/index 
+      
+block content
+
+     h1.text-center.text-4xl.font-extrabold.my-10 MY 
+           span.font-normal Reports
+     h2.text-center.text-2xl.font-extrabold=titulo
+
+
+     div(class="bg-white shadow rounded px-8 pt-6 pb-8 mb-4 flex mt-5 flex-row my-2")
+          p(class= error ? 'bg-red-500' : 'bg-green-500').py-3.px-5.rounded-lg.w-full.font-bold.uppercase.text-center.mt-5=mensaje
+
+
+          if !error
+            div.block
+               a(href="/login" class="bg-blue-500 hover:bg-blue-700 text-white block w-full font-bold py-2 px-4 rounded") Iniciar Sesión

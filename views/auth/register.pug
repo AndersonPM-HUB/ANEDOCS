@@ -9,20 +9,28 @@ block content
       .mt-8.mx-auto.max-w-md
         .bg-white.py-8.px-4.shadow
 
-            form.space-y-5(action="/login", method="post")
+            if errores 
+               
+                    div.bg-red-600.max-w-md.mx-auto.my-10
+                        each error in errores
+                            p.text-red-500.text-center.p-2.uppercase.font-bold=error.msg
 
+            form.space-y-5(action="/registrar", method="post", noValidate)
+
+                input(type="hidden", name="_csrf", value=csrfToken)
+                
                 div 
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="cc") CC:
-                    input(type="number", id="cc", name="cc",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="CC" required)
-
+                    input(type="number", id="cc", name="cedula",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="CC" required)
+                
                  
                 div 
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="username")  Usuario:
-                    input(type="text", id="username", name="username",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu nombre" required)
+                    input(type="text", id="username", name="nombre",class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu nombre" required)
 
                 div 
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="correo")  Correo:
-                    input(type="email", id="correo", name="correo", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu Email" required)
+                    input(type="email", id="correo", name="email", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Tu Email" required)
 
                 div
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") Contraseña:
