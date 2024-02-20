@@ -39,7 +39,7 @@ const autenticar = async (req, res) => {
 }
 
 const formularioRegister = (req , res) => {
-    
+
     res.render('auth/register', {
         titulo: 'Registrar Usuario',  
         
@@ -55,8 +55,6 @@ const formilarioRecuperacionPassword = (req , res) => {
 
 const registrar = async(req , res) => {
     
-   
-    
     console.log(req.body)
     //validar datos
     await check('cedula','El campo debe ser numerico').isNumeric().run(req);
@@ -71,7 +69,8 @@ const registrar = async(req , res) => {
         return res.render('auth/register',{
             titulo: 'Registrar Usuario',
             errores: resultado.array(),
-              
+            
+             
         });}
         
     //2. validar que el usuario no exista
@@ -103,7 +102,7 @@ const registrar = async(req , res) => {
     }
 
 
-    const comprobarCuenta = async (req, res) => {
+const comprobarCuenta = async (req, res) => {
         
         const {token} = req.params;
         console.log(token);
