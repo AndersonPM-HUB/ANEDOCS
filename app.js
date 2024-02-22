@@ -27,8 +27,8 @@ app.set('views', './views')
 
 
 // Use csrf middleware
-app.use(cookieParser())
-app.use(csrf({ cookie: true }))
+// app.use(cookieParser())
+// app.use(csrf({ cookie: true }))
 
 
 //conexion con bd

@@ -1,0 +1,21 @@
+extends ../layout/index 
+      
+block content
+
+      h1.text-center.text-4xl.font-extrabold.my-10 MY 
+           span.font-normal Cargue Contrato
+      h2.text-center.text-2xl.font-extrabold=titulo
+
+      .mt-8.mx-auto.max-w-md
+        .bg-white.py-8.px-4.shadow
+
+            form.space-y-5(action="/upload_file", method="post", enctype="multipart/form-data", noValidate)
+
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="correo")  Contrato:
+                    input(type="file", id="files", name="files", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="Archivos" required)
+
+            
+              
+                div
+                    input(type="submit", value="Cargar Archivos", class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 cursor-pointer rounded")
