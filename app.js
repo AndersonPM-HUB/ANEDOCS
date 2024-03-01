@@ -2,6 +2,7 @@ import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import plataformaRoutes from './routes/plataformaRoutes.js';
 import db from './config/db.js';
 
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true})) //para poder leer formulario
 
 //entry
 app.use('/', usuarioRoutes)
+app.use('/mis-informes', plataformaRoutes)
 
 
 //manejo de archivos staticos 

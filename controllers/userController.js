@@ -1,11 +1,12 @@
 import { check, validationResult } from 'express-validator';
-import { generarId } from '../helpers/tokens.js'; 
+import { generarId, generarToken } from '../helpers/tokens.js'; 
 import Usuario from '../models/Usuario.js';
 import db from '../config/db.js';
 import { emailRegistro } from '../helpers/emails.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -70,6 +71,7 @@ const autenticar = async (req, res) => {
     await check('password').notEmpty().withMessage("La contraseña debe tener al menos 6 caracteres").run(req);
 
     let resultado = validationResult(req); //resultado de la validacion 
+   
     //1. verificar que el resultado este vacio 
     if (!resultado.isEmpty()) {
         return res.render('auth/login',{
@@ -77,18 +79,45 @@ const autenticar = async (req, res) => {
             errores: resultado.array(),
             });}
 
+
     //2. validar que el usuario no exista
     const { cedula, password } = req.body;
-    const existeUsuario = await Usuario.findOne({where: {cedula }});
+
+    const existeUsuario = await Usuario.findOne({where: {cedula}});
 
     if (!existeUsuario) {
         return res.render('auth/login',{
             titulo: 'Iniciar Sesion',
-            errores: [{msg: 'El usuario no existe'}],
-            
-        });}
+            errores: [{msg: 'El usuario no existe'}], });}
 
-   
+
+    //3.  validar que este confirmado con el token de la base de datos 
+    if (!existeUsuario.confirmado) {
+            return res.render('auth/login',{
+                titulo: 'Iniciar Sesion',
+                errores: [{msg: 'Tu no has confirmado tu cuenta'}],
+                
+            });}
+
+    //4. validar que la contraseña coincida con la que se registró
+    if(!existeUsuario.validarPassword(password)) {
+        return res.render('auth/login',{
+            titulo: 'Iniciar Sesion',
+            errores: [{msg: 'La contraseña es incorrecta'}], });}
+
+    //5. Autenticar al usuario y redirigir a la pagina principal
+
+    console.log(existeUsuario)
+    const token = generarToken({id: existeUsuario.id });
+    console.log(token);
+
+    //6. almacenar en cookie o localstorage
+    res.cookie('token', token, {
+        httpOnly: true, //evitar csrfc
+        //secure: true, 
+       
+    }).redirect('/mis-informes');
+
 }
 
 const formularioRegister = (req , res) => {
