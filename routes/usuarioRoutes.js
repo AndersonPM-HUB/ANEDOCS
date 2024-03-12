@@ -1,5 +1,5 @@
 import express from 'express'
-import { carguePDF, uploadFiles , formularioLogin , formularioRegister,formilarioRecuperacionPassword, registrar, comprobarCuenta, autenticar} from '../controllers/userController.js'
+import { carguePDF, uploadFiles , formularioLogin , formularioRegister,formilarioRecuperacionPassword, registrar, comprobarCuenta, autenticar, resetPassword, comprobarToken, nuevaPassword} from '../controllers/userController.js'
 
 
 
@@ -24,9 +24,12 @@ router.get('/confirmar/:token', comprobarCuenta);
 
 
 router.get('/recuperacion', formilarioRecuperacionPassword);
+router.post('/recuperar-password', resetPassword);
 
 
-
+// Almacena nuevo password
+router.get('/recuperacion/:token',comprobarToken);
+router.post('/recuperacion/:token',nuevaPassword);
 
 
 export default router
