@@ -64,8 +64,9 @@ const formularioLogin = (req , res) => {
         titulo: 'Login Usuario',
 });};
 
-const autenticar = async (req, res) => {
-    console.log("Autenticando");
+const  autenticar = async (req, res) => {
+    console.log(req.body);
+
     await check('cedula').notEmpty().withMessage('El campo CC debe ser numerico').run(req);
     await check('password').notEmpty().withMessage("La contraseña debe tener al menos 6 caracteres").run(req);
 
@@ -113,7 +114,7 @@ const autenticar = async (req, res) => {
     //6. almacenar en cookie o localstorage
     res.cookie('token', token, {
         httpOnly: true, //evitar csrfc
-        //secure: true, 
+        secure: true, 
        
     }).redirect('/mis-informes');
 

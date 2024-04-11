@@ -15,8 +15,8 @@ app.use(express.urlencoded({ extended: true})) //para poder leer formulario
 
 
 //entry
-app.use('/', usuarioRoutes)
-app.use('/mis-informes', plataformaRoutes)
+app.use('/', usuarioRoutes) //login
+app.use('/mis-informes', plataformaRoutes) //plataforma
 
 
 //manejo de archivos staticos 
@@ -29,8 +29,8 @@ app.set('views', './views')
 
 
 // Use csrf middleware
-// app.use(cookieParser())
-// app.use(csrf({ cookie: true }))
+app.use(cookieParser())
+//app.use(csrf({ cookie: true }))
 
 
 //conexion con bd
