@@ -1,0 +1,78 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title My Reports
+    link(rel="stylesheet" href="/css/menu.css")
+    link(rel="stylesheet" href="responsive.css")
+    script(src="/js/dash.js") 
+
+  body
+    header
+      .logosec
+        .logo My Reports
+        img.icn.menuicn#menuicn(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210182541/Untitled-design-(30).png" alt="menu-icon")
+      
+      .searchbar
+        input(type="text" placeholder="Search")
+        .searchbtn
+          img.icn.srchicn(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png" alt="search-icon")
+      
+      .message
+        .circle
+        img.icn(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183322/8.png" alt="")
+        .dp
+          img.dpicn(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180014/profile-removebg-preview.png" alt="dp")
+
+    .main-container
+      .navcontainer
+        nav.nav
+          .nav-upper-options
+            .nav-option.option1
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210182148/Untitled-design-(29).png" alt="dashboard")
+              h3 Dashboard
+            .nav-option.option2
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183322/9.png" alt="articles")
+              h3 MIs Contratos 
+            .nav-option.option3
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/5.png" alt="report")
+              h3 Mis Obligaciones 
+            .nav-option.option5
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183323/10.png" alt="blog")
+              h3 Tareas
+            .nav-option.option6
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png" alt="settings")
+              h3 Settings
+            .nav-option.logout
+              img.nav-img(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183321/7.png" alt="logout")
+              h3 Logout
+      
+      .main
+        .searchbar2
+          input(type="text" placeholder="Search")
+          .searchbtn
+            img.icn.srchicn(src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png" alt="search-button")
+        
+
+        .report-container
+          .report-header
+            h1.recent-Articles Recent Articles
+            button.view View All
+          .report-body
+            .report-topic-heading
+              h3.t-op Article
+              h3.t-op Views
+              h3.t-op Comments
+              h3.t-op Status
+            .items
+              each val, index in [73, 72, 71, 70, 69, 68, 67, 66, 65]
+                .item1
+                  h3.t-op-nextlvl Article #{val}
+                  h3.t-op-nextlvl 2.9k
+                  h3.t-op-nextlvl 210
+                  h3.t-op-nextlvl.label-tag Published
+
+     
+      

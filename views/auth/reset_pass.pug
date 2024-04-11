@@ -1,0 +1,30 @@
+extends ../layout/index 
+      
+block content
+
+      h1.text-center.text-4xl.font-extrabold.my-10 MY 
+           span.font-normal Reports
+      h2.text-center.text-2xl.font-extrabold=titulo
+
+      .mt-8.mx-auto.max-w-md
+        .bg-white.py-8.px-4.shadow
+
+            if errores 
+               
+             div.bg-red-600.max-w-md.mx-auto.my-10
+                 each error in errores
+                    p.text-red-500.text-center.p-2.uppercase.font-bold=error.msg
+
+            form.space-y-5(method="post")
+
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="pass")  Nueva contraseña:
+                    input(type="password", id="pass", name="password", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="" required)
+
+            
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="pass2")  Repetir contraseña:
+                    input(type="password", id="pass2", name="password2", ,class="border gray 300 w-full py-2 px-3 rounded-md mb-3", placeholder="" required)
+              
+                div
+                    input(type="submit", value="Asignar nueva password", class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 cursor-pointer rounded")

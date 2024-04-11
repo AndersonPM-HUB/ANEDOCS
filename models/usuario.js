@@ -33,5 +33,9 @@ const Usuario = db.define('informes_usuario', {
     }
 })
 
+//funcion para comparar la contraseña, registrandio en el prototype para la calse usuario 
+Usuario.prototype.validarPassword =  function(password) {
+    return  bcrypt.compareSync(password, this.password);
+}
 
 export default Usuario;

@@ -9,7 +9,13 @@ block content
       .mt-8.mx-auto.max-w-md
         .bg-white.py-8.px-4.shadow
 
-            form.space-y-5(action="/login", method="post")
+            if errores 
+               
+             div.bg-red-600.max-w-md.mx-auto.my-10
+                 each error in errores
+                    p.text-red-500.text-center.p-2.uppercase.font-bold=error.msg
+
+            form.space-y-5(action="/recuperar-password", method="post")
 
                 div 
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="correo")  Correo:

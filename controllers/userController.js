@@ -1,11 +1,13 @@
 import { check, validationResult } from 'express-validator';
-import { generarId } from '../helpers/tokens.js'; 
+import bcrypt from 'bcrypt';
+import { generarId, generarToken } from '../helpers/tokens.js'; 
 import Usuario from '../models/Usuario.js';
 import db from '../config/db.js';
-import { emailRegistro } from '../helpers/emails.js';
+import { emailRegistro,olvidePassword } from '../helpers/emails.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -57,19 +59,19 @@ const carguePDF = (req, res) => {
 });
 };
 
-
 const formularioLogin = (req , res) => {
     res.render('auth/login',{
         titulo: 'Login Usuario',
-    });};
+});};
 
+const  autenticar = async (req, res) => {
+    console.log(req.body);
 
-const autenticar = async (req, res) => {
-    console.log("Autenticando");
     await check('cedula').notEmpty().withMessage('El campo CC debe ser numerico').run(req);
     await check('password').notEmpty().withMessage("La contraseña debe tener al menos 6 caracteres").run(req);
 
     let resultado = validationResult(req); //resultado de la validacion 
+   
     //1. verificar que el resultado este vacio 
     if (!resultado.isEmpty()) {
         return res.render('auth/login',{
@@ -77,18 +79,45 @@ const autenticar = async (req, res) => {
             errores: resultado.array(),
             });}
 
-    //2. validar que el usuario no exista
+
+    //2. validar que el usuario  exista
     const { cedula, password } = req.body;
-    const existeUsuario = await Usuario.findOne({where: {cedula }});
+
+    const existeUsuario = await Usuario.findOne({where: {cedula}});
 
     if (!existeUsuario) {
         return res.render('auth/login',{
             titulo: 'Iniciar Sesion',
-            errores: [{msg: 'El usuario no existe'}],
-            
-        });}
+            errores: [{msg: 'El usuario no existe'}], });}
 
-   
+
+    //3.  validar que este confirmado con el token de la base de datos 
+    if (!existeUsuario.confirmado) {
+            return res.render('auth/login',{
+                titulo: 'Iniciar Sesion',
+                errores: [{msg: 'Tu no has confirmado tu cuenta'}],
+                
+            });}
+
+    //4. validar que la contraseña coincida con la que se registró
+    if(!existeUsuario.validarPassword(password)) {
+        return res.render('auth/login',{
+            titulo: 'Iniciar Sesion',
+            errores: [{msg: 'La contraseña es incorrecta'}], });}
+
+    //5. Autenticar al usuario y redirigir a la pagina principal
+
+    console.log(existeUsuario)
+    const token = generarToken({id: existeUsuario.id });
+    console.log(token);
+
+    //6. almacenar en cookie o localstorage
+    res.cookie('token', token, {
+        httpOnly: true, //evitar csrfc
+        secure: true, 
+       
+    }).redirect('/mis-informes');
+
 }
 
 const formularioRegister = (req , res) => {
@@ -97,14 +126,12 @@ const formularioRegister = (req , res) => {
         titulo: 'Registrar Usuario',  
         
     })
-    }
-
+ }
 
 const formilarioRecuperacionPassword = (req , res) => {
     res.render('auth/recuperacion',{
         titulo: 'Recuperacion de Password'
-    });}
-
+});}
 
 const registrar = async(req , res) => {
     
@@ -152,8 +179,7 @@ const registrar = async(req , res) => {
     res.render('templates/message', {
         titulo: 'Cuenta creada con exito', 
         mensaje: 'Se ha enviado un correo de confirmacion a tu email'});
-    }
-
+ }
 
 const comprobarCuenta = async (req, res) => {
         
@@ -183,7 +209,113 @@ const comprobarCuenta = async (req, res) => {
             mensaje: 'Ya puedes iniciar sesion',
             error:false
         });
+}
+
+const resetPassword = async (req, res) =>{
+
+
+    await check('correo', 'El email es obligatorio').isEmail().run(req);
+  
+    let resultado = validationResult(req);
+    if (!resultado.isEmpty()) {
+        return res.render('auth/recuperacion',{
+            titulo: 'Recuperacion de Password',
+            errores: resultado.array(),
+             
+        });}
+        
+    //2. validar que el usuario no exista
+    const existeUsuario = await Usuario.findOne({where: {email: req.body.correo}});
+
+    console.log(existeUsuario)
+
+    if (!existeUsuario) {
+    
+            return res.render('auth/recuperacion',{
+                titulo: 'Recuperacion de Password',
+                errores: [{ msg: "El Email no esta registrado"}]
+        
+        });
     }
+
+   //3. Token 
+   existeUsuario.token = generarId(); 
+   await existeUsuario.save();
+
+   //enviar email 
+    olvidePassword({
+        nombre : existeUsuario.nombre,
+        email : existeUsuario.email,
+        token : existeUsuario.token
+    })
+
+    res.render('templates/message', {
+        titulo: 'Se ha enviado un correo de recuperacion a tu email'});
+
+}
+
+const comprobarToken = async(req , res) =>{
+
+    const {token} = req.params;
+    console.log(token);
+
+    //verificar el token vaido para el usuario : todas las consulatas con await 
+    const usuario = await Usuario.findOne({where: {token}});
+
+    //token no valido
+    if (!usuario) {
+        return res.render('auth/confirmarCuenta', {
+            titulo: 'Reestablecer Password', 
+            mensaje: '0ps, Algo paso, no fue posible recuperar tu contraseña, intenta nuevamente',
+            error:true
+        });
+    }
+
+
+    //token valido , mostqar un formulario para agregar new password 
+    res.render('auth/reset_pass', {
+        titulo: 'Reestablecer Password', 
+        mensaje: 'Agregue una nueva contraseña',
+        error:false
+    });
+   
+}
+
+const nuevaPassword = async(req , res) =>{
+
+    //validar pass
+    await check('password').isLength({min: 6}).withMessage("La contraseña debe tener al menos 6 caracteres").run(req);
+    await check('password2').equals(req.body.password).withMessage('Las contraseñas no coinciden').run(req);
+
+    
+    let resultado = validationResult(req); //resultado de la validacion 
+    //1. verificar que el resultado este vacio 
+    if (!resultado.isEmpty()) {
+        res.render('auth/reset_pass', {
+            titulo: 'Reestablecer Password', 
+            errores : resultado.array()
+        });
+    }
+
+    const {token} = req.params;
+    const {password} = req.body; 
+
+    const usuario = await Usuario.findOne({where: {token}});
+
+    //hashear password 
+    const salt = await bcrypt.genSaltSync(10)
+    usuario.password = await bcrypt.hash( password, salt);
+    usuario.token = null; //para blokear el tema de cambiar la contraseña 
+
+    await usuario.save();
+
+    res.render('templates/message', {
+        titulo: 'Contraseña cambiada con exito', 
+        mensaje: 'Ya puedes iniciar sesion',
+        error:false
+    });
+
+}
 
 
 //other for export multiples functions different to export default 
@@ -195,5 +327,8 @@ export {
     formilarioRecuperacionPassword,
     registrar,
     comprobarCuenta,
-    autenticar
+    autenticar,
+    resetPassword,
+    comprobarToken,
+    nuevaPassword
 }

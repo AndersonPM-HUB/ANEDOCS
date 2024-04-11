@@ -2,6 +2,7 @@ import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import plataformaRoutes from './routes/plataformaRoutes.js';
 import db from './config/db.js';
 
 
@@ -14,7 +15,8 @@ app.use(express.urlencoded({ extended: true})) //para poder leer formulario
 
 
 //entry
-app.use('/', usuarioRoutes)
+app.use('/', usuarioRoutes) //login
+app.use('/mis-informes', plataformaRoutes) //plataforma
 
 
 //manejo de archivos staticos 
@@ -27,8 +29,8 @@ app.set('views', './views')
 
 
 // Use csrf middleware
-// app.use(cookieParser())
-// app.use(csrf({ cookie: true }))
+app.use(cookieParser())
+//app.use(csrf({ cookie: true }))
 
 
 //conexion con bd
